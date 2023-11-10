@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import { places } from './data.js';
+import { getImageUrl } from './utils.js';
 
-function App() {
+export default function App() {
+  const [isLarge, setIsLarge] = useState(false);
+  const imageSize = isLarge ? 150 : 100;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <label>
+        <input
+          type="checkbox"
+          checked={isLarge}
+          onChange={e => {
+            setIsLarge(e.target.checked);
+          }}
+        />
+        Use large images
+      </label>
+      <hr />
+      <List imageSize={imageSize} />
+    </>
+  )
+}
+
+function List({ imageSize }) {
+  const listItems = places.map(place =>
+    <li key={place.id}>
+      <Place
+        place={place}
+        imageSize={imageSize}
+      />
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+function Place({ place, imageSize }) {
+  return (
+    <>
+      <PlaceImage
+        place={place}
+        imageSize={imageSize}
+      />
+      <p>
+        <b>{place.name}</b>
+        {': ' + place.description}
+      </p>
+    </>
   );
 }
 
-export default App;
+function PlaceImage({ place, imageSize }) {
+  return (
+    <img
+      src={getImageUrl(place)}
+      alt={place.name}
+      width={imageSize}
+      height={imageSize}
+    />
+  );
+}
